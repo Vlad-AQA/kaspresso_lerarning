@@ -1,6 +1,7 @@
 package ru.stimmax.lesson4
 
 import javax.print.attribute.standard.MediaSize
+import kotlin.random.Random
 
 //Перегрузка операторов
 //Есть класс Inventory, внутри которого хранится список строк items.
@@ -106,6 +107,53 @@ class Log(
     //что бы println вернул не адрес в памяти
     override fun toString(): String {
         return "$entries"
+    }
+
+}
+
+//Генератор фраз.
+//Используй класс Person из "общих рекомендаций" ниже. Добавь в этот класс три инфиксные функции:
+//says должна принимать строку, добавлять её в список фраз и возвращать этот же объект Person для дальнейшей работы.
+// Всегда вызывается первой.
+//and работает так же как и says, но не может быть вызвана первой (в этом случае нужно выкидывать IllegalStateException).
+//or должна принимать строку и заменять последнюю фразу в списке фраз,
+// выбирая случайным образом переданную строку или последнюю фразу из списка фраз с помощью метода selectPhrase.
+// Так же должна возвращать текущий объект Person для дальнейшей работы. Так же не может быть вызвана первой,
+// иначе выбрасывает IllegalStateException.
+
+class Person(private val name: String) {
+
+    private val phrases = mutableListOf<String>()
+
+    fun print() {
+        println(phrases.joinToString(" "))
+    }
+
+    private fun selectPhrase(first: String, second: String): String {
+        val random = Random.nextInt(0, 2)
+        return if (random == 0) first else second
+    }
+
+    //функция должна:
+    //Быть методом класса или extension function
+    //Иметь ключевое слово infix
+    //Принимать ровно один параметр
+
+    infix fun says(string: String): Person {
+        phrases.add(string)
+        return this
+    }
+
+    infix fun and(string: String): Person {
+        check((phrases.isNotEmpty())) { "Список должен быть не пуст" }
+        phrases.add(string)
+        return this
+    }
+
+    infix fun or(string: String): Person {
+        check((phrases.isNotEmpty())) { "Список должен быть не пуст" }
+        phrases.add(selectPhrase(phrases.removeLast(), string))
+        return this
     }
 
 }
