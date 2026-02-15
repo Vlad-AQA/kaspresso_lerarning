@@ -57,7 +57,11 @@ object Server {
     }
 }
 
-data class Product(val name: String, val weight: Int, val price: Double) {
+data class Product(
+    val name: String,
+    val weight: Int,
+    val price: Double
+) {
 
 }
 
@@ -87,7 +91,11 @@ class Stock {
         func()
     }
 
-    fun addProduct(name: String, weight: Int, price: Double) = addProduct(Product(name, weight, price))
+    fun addProduct(
+        name: String,
+        weight: Int,
+        price: Double
+    ) = addProduct(Product(name, weight, price))
 
     infix fun String.x(weight: Int): Pair<String, Int> {
         return this to weight

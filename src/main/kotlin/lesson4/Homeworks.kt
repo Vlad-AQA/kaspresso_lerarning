@@ -36,7 +36,7 @@ class Toggle(
 ) {
 
     operator fun not(): Toggle {
-        return Toggle(!this.enabled)
+        return Toggle(!enabled)
     }
 
     //что бы println вернул не адрес в памяти
@@ -98,7 +98,6 @@ operator fun IntRange.contains(step: Step): Boolean {
 class Log(
     val entries: List<String> = listOf()
 ) {
-
     operator fun plus(other: Log): Log{
         val sumLog = this.entries + other.entries
         return Log(sumLog)
@@ -180,5 +179,9 @@ fun main() {
     val log2 = Log(listOf("3","4"))
     println(log2 + log1)
 
+
+    val andrew = Person("Andrew")
+    andrew says "Hello" and "brothers." or "sisters." and "I believe" and "you" and "can do it" or "can't"
+    andrew.print()
 
 }
