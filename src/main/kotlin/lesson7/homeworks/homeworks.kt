@@ -4,6 +4,7 @@ import org.hamcrest.Matchers.*
 import org.hamcrest.TypeSafeDiagnosingMatcher
 import org.hamcrest.Description
 import org.hamcrest.Matcher
+import org.hamcrest.MatcherAssert.assertThat
 
 //Проверка длины стороны в заданном диапазоне (например, от 0.1 до 100.0).
 //Проверка количества углов:
@@ -217,6 +218,97 @@ class MatcherFigureBuilder() {
         return allOf(matcherFigureBuilder)
     }
 
+    fun buildAnyOff(): Matcher<GeomFigure> {
+        return anyOf(matcherFigureBuilder)
+    }
+}
+
+fun filterShapes(
+    shapes: List<GeomFigure>,
+    useAnyOff: Boolean,
+    builder: MatcherFigureBuilder.() -> Unit
+): List<GeomFigure> {
+    if (!useAnyOff) {
+        val matcherFigureBuilder = MatcherFigureBuilder()
+
+        builder(matcherFigureBuilder)
+
+        val matherBuild = matcherFigureBuilder.build()
+        return shapes.filter { matherBuild.matches(it) }
+    } else {
+        val matcherFigureBuilder = MatcherFigureBuilder()
+
+        builder(matcherFigureBuilder)
+
+        val matherBuild = matcherFigureBuilder.buildAnyOff()
+        return shapes.filter { matherBuild.matches(it) }
+    }
+}
+
+fun main() {
+
+    val shapes = listOf(
+        GeomFigure(10f, 3, Color.RED),
+        GeomFigure(5f, 4, Color.BLUE),
+        GeomFigure(7f, 2, Color.GREEN),
+        GeomFigure(0.5f, 1, Color.YELLOW),
+        GeomFigure(-3f, 5, Color.BLACK),
+        GeomFigure(8f, -2, Color.WHITE),
+        GeomFigure(12f, 6, Color.RED),
+        GeomFigure(15f, 8, Color.BLUE),
+        GeomFigure(20f, 4, Color.GREEN),
+        GeomFigure(9f, 5, Color.YELLOW),
+        GeomFigure(2f, 3, Color.BLACK),
+        GeomFigure(11f, 7, Color.WHITE),
+        GeomFigure(6f, 10, Color.RED),
+        GeomFigure(3f, 2, Color.BLUE),
+        GeomFigure(4f, 1, Color.GREEN),
+        GeomFigure(25f, 12, Color.YELLOW),
+        GeomFigure(30f, 14, Color.BLACK),
+        GeomFigure(35f, 16, Color.WHITE),
+        GeomFigure(40f, 18, Color.RED),
+        GeomFigure(50f, 20, Color.BLUE)
+    )
+    val result = filterShapes(shapes, false) {
+        withColor(Color.RED)
+        even()
+        quantityAngles(4)
+    }
+
+    val result1 = filterShapes(shapes, false) {
+        fromLength(2f)
+        toLength(11f)
+        even()
+        withColor(Color.BLUE)
+    }
+
+    val result2 = filterShapes(shapes, false) {
+        fromLength(2f)
+        toLength(19f)
+        quantityAngles(8)
+    }
+
+    val result3 = filterShapes(shapes, true) {
+        withColor(Color.BLACK)
+        even()
+    }
+
+    try {
+        assertThat(shapes[5], NegativeSideMatcher())
+    } catch (e: AssertionError) {
+        println(e.message)
+    }
+
+    try {
+        assertThat(shapes[4], NegativeLengthMatcher())
+    } catch (e: AssertionError) {
+        println(e.message)
+    }
+
+    println(result)
+    println(result1)
+    println(result2)
+    println(result3)
 }
 
 
