@@ -5,7 +5,6 @@ import java.time.format.DateTimeFormatter
 import ru.stimmax.lesson5.Days.*
 
 
-
 //Для создания диапазона через две точки переопредели оператор rangeTo
 //Для передачи нужного дня недели используй внешнюю относительно метода
 // переменную var в которую нужно сохранить используемый в текущем блоке
@@ -26,7 +25,6 @@ data class ScheduleEntity(
     val startTime: LocalTime,
     val endTime: LocalTime
 )
-
 
 
 class Schedule {
@@ -64,21 +62,6 @@ class Schedule {
         return Pair(this, endTime)
     }
 
-    //меняем дни для разных функций
-    fun days(days: Days,add: Schedule.()-> Unit) {
-        dayWeek = days
-        add()
-        dayWeek = null
-    }
-
-    fun monday(add: Schedule.() -> Unit) = days(MONDAY, add)
-    fun tuesday(add: Schedule.() -> Unit) = days(TUESDAY, add)
-    fun wednesday(add: Schedule.() -> Unit) = days(WEDNESDAY, add)
-    fun thursday(add: Schedule.() -> Unit) = days(Days.THURSDAY, add)
-    fun friday(add: Schedule.() -> Unit) = days(FRIDAY, add)
-    fun saturday(add: Schedule.() -> Unit) = days(SATURDAY, add)
-    fun sunday(add: Schedule.() -> Unit) = days(SUNDAY, add)
-
 
     infix fun Pair<String, String>.schedule(lesson: String) {
 
@@ -89,12 +72,25 @@ class Schedule {
         val daysFilter = dayWeek ?: error("Введите день недели")
 
         // !! игнорировать проверку на налл
-        addSchedule(daysFilter, ScheduleEntity(lesson,start,end))
+        addSchedule(daysFilter, ScheduleEntity(lesson, start, end))
     }
+
+    //меняем дни для разных функций
+    fun days(days: Days, add: Schedule.() -> Unit) {
+        dayWeek = days
+        add()
+        dayWeek = null
+    }
+
+
+    fun monday(add: Schedule.() -> Unit) = days(MONDAY, add)
+    fun tuesday(add: Schedule.() -> Unit) = days(TUESDAY, add)
+    fun wednesday(add: Schedule.() -> Unit) = days(WEDNESDAY, add)
+    fun thursday(add: Schedule.() -> Unit) = days(Days.THURSDAY, add)
+    fun friday(add: Schedule.() -> Unit) = days(FRIDAY, add)
+    fun saturday(add: Schedule.() -> Unit) = days(SATURDAY, add)
+    fun sunday(add: Schedule.() -> Unit) = days(SUNDAY, add)
 }
-
-
-
 
 
 fun main() {

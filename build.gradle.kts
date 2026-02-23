@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     testImplementation(kotlin("test"))
+    implementation("org.hamcrest:hamcrest:2.2")
 }
 
 tasks.test {
