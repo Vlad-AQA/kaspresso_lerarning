@@ -44,6 +44,7 @@ class FromSideLengthMatcher(
         }
         return true
     }
+
     override fun describeTo(description: Description) {
         description.appendText("side length from ")
             .appendValue(expectedFromLength)
@@ -65,6 +66,7 @@ class ToSideLengthMatcher(
         }
         return true
     }
+
     override fun describeTo(description: Description) {
         description.appendText("side length to ")
             .appendValue(expectedToLength)
@@ -97,6 +99,7 @@ class NumberOfAnglesMatcher(
         }
         return true
     }
+
     override fun describeTo(description: Description) {
         description.appendText("side number to ")
             .appendValue(expectedAngles)
@@ -112,12 +115,12 @@ class EvenNumberSidesMatcher() : TypeSafeDiagnosingMatcher<GeomFigure>() {
         mismatchDescription: Description
     ): Boolean {
         if (item.numberSides % 2 != 0) {
-            mismatchDescription.appendText("number of parties ").
-            appendValue(item.numberSides)
+            mismatchDescription.appendText("number of parties ").appendValue(item.numberSides)
             return false
         }
         return true
     }
+
     override fun describeTo(description: Description) {
         description.appendText("the number of sides is odd")
 
@@ -144,9 +147,45 @@ class ColorMatcher(
     override fun describeTo(description: Description) {
         description.appendText("were looking for color ")
             .appendValue(expectedColor)
+    }
+}
 
+////Проверка на наличие отрицательной длины стороны (недопустимо).
+class NegativeLengthMatcher() : TypeSafeDiagnosingMatcher<GeomFigure>() {
+    override fun matchesSafely(
+        item: GeomFigure,
+        mismatchDescription: Description
+    ): Boolean {
+        if (item.sideLength < 0) {
+            mismatchDescription.appendText("negative length is specified ")
+                .appendValue(item.sideLength)
+            return false
+        }
+        return true
     }
 
+    override fun describeTo(description: Description) {
+        description.appendText("length cannot be negative")
+    }
+}
+
+////Проверка на наличие отрицательного количества сторон (недопустимо).
+class NegativeSideMatcher() : TypeSafeDiagnosingMatcher<GeomFigure>() {
+    override fun matchesSafely(
+        item: GeomFigure,
+        mismatchDescription: Description
+    ): Boolean {
+        if (item.numberSides < 0) {
+            mismatchDescription.appendText("a negative number of sides is specified ")
+                .appendValue(item.numberSides)
+            return false
+        }
+        return true
+    }
+
+    override fun describeTo(description: Description) {
+        description.appendText("the number of sides cannot be negative")
+    }
 }
 
 class MatcherFigureBuilder() {
@@ -155,17 +194,23 @@ class MatcherFigureBuilder() {
     fun fromLength(length: Float) {
         matcherFigureBuilder.add(FromSideLengthMatcher(length))
     }
-
     fun toLength(length: Float) {
         matcherFigureBuilder.add(ToSideLengthMatcher(length))
     }
-
     fun quantityAngles(numberSide: Int) {
         matcherFigureBuilder.add(NumberOfAnglesMatcher(numberSide))
     }
-
     fun even() {
         matcherFigureBuilder.add(EvenNumberSidesMatcher())
+    }
+    fun withColor(color: Color) {
+        matcherFigureBuilder.add(ColorMatcher(color))
+    }
+    fun negativeLength(){
+        matcherFigureBuilder.add(NegativeLengthMatcher())
+    }
+    fun negativeNumberSide() {
+        matcherFigureBuilder.add(NegativeSideMatcher())
     }
 
     fun build(): Matcher<GeomFigure> {
